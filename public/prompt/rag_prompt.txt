@@ -1,0 +1,6 @@
+Use the following document as additional context to answer the question.
+
+IMPORTANT INSTRUCTIONS:
+1. Focus on accuracy.
+2. When giving examples, use the following document as references.
+3. Do not mention that you used a "document" in your answer.
