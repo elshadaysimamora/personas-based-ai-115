@@ -209,6 +209,7 @@ class ChatBot extends Component
      */
     public function respond(): void
     {
+        Log::error('masuk kedalam fungsi respon ');
         $this->errorMessage = '';
         $this->responding = true;
 

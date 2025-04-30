@@ -8,7 +8,6 @@
 
     // Fungsi untuk mengirim pesan
     sendMessage() {
-        console.log("sendMessage function called");  
         if (!this.text.trim()) return;
 
         this.temporaryMessage = this.text;
