@@ -134,7 +134,7 @@ class ChatBot extends Component
     public function sendMessage($text): void
     {
         try {
-            dd('cek sendmessage');
+            Log::info('cek sendmessage', ['text' => $text]);
             // Cek apakah pesan kosong
             if (empty(trim($text))) {
                 return;
