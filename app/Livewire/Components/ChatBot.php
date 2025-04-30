@@ -116,12 +116,30 @@ class ChatBot extends Component
      * Kirim pesan pengguna ke database
      */
 
+    // public function sendMessage($text): void
+    // {
+    //     if (empty(trim($text))) {
+    //         return;
+    //     }
+
+    //     $this->conversation->messages()->create([
+    //         'content' => $text,
+    //         'is_user_message' => true
+    //     ]);
+
+    //     // Refresh percakapan setelah mengirim pesan
+    //     $this->conversation->refresh();
+    // }
+
     public function sendMessage($text): void
-    {
+{
+    try {
+        // Cek apakah pesan kosong
         if (empty(trim($text))) {
             return;
         }
 
+        // Simpan pesan dalam percakapan
         $this->conversation->messages()->create([
             'content' => $text,
             'is_user_message' => true
@@ -129,7 +147,15 @@ class ChatBot extends Component
 
         // Refresh percakapan setelah mengirim pesan
         $this->conversation->refresh();
+    } catch (\Exception $e) {
+        // Log error jika terjadi exception
+        Log::error('Failed to send message: ' . $e->getMessage(), [
+            'error' => $e,
+            'text' => $text,
+            'conversation_id' => $this->conversation->id ?? null
+        ]);
     }
+}
 
     /**
      * Dapatkan konteks persona pengguna
@@ -139,7 +165,7 @@ class ChatBot extends Component
         $user = auth()->user();
         if ($user && $user->persona_id) {
             $persona = Personas::find($user->persona_id);
-            
+
             if ($persona) {
                 return [
                     [
@@ -186,10 +212,10 @@ class ChatBot extends Component
         $this->responding = true;
 
         try {
-            // Generate judul jika diperlukan  
+            // Generate judul jika diperlukan
             $this->generateTitleIfNeeded();
 
-            // Pilih metode generasi berdasarkan model  
+            // Pilih metode generasi berdasarkan model
             $stream = match ($this->model) {
                 'gpt-rag-persona' => $this->chatGeneratorService->generateWithRAGPersona(
                     conversation: $this->conversation,
@@ -209,7 +235,7 @@ class ChatBot extends Component
             // dd($allContent); // Ini akan menampilkan konten respons lengkap
 
             // $entireMessage = '';
-            // // Proses stream token per token  
+            // // Proses stream token per token
             // foreach ($stream as $response) {
             //     $content = $response->choices[0]->delta->content ?? '';
             //     if ($content) {
@@ -230,7 +256,7 @@ class ChatBot extends Component
                 }
             }
 
-            // Simpan pesan lengkap setelah streaming selesai  
+            // Simpan pesan lengkap setelah streaming selesai
             if (!empty($entireMessage)) {
                 $this->conversation->messages()->create([
                     'content' => $entireMessage,
@@ -238,12 +264,12 @@ class ChatBot extends Component
                 ]);
             }
 
-            // Trigger event bahwa pesan telah ditambahkan  
+            // Trigger event bahwa pesan telah ditambahkan
             $this->dispatch('messageAdded');
         } catch (\Exception $e) {
             $this->errorMessage = $e->getMessage();
 
-            // Kirim pesan error yang lebih ramah pengguna  
+            // Kirim pesan error yang lebih ramah pengguna
             $this->errorMessage = "Terjadi kesalahan saat menghasilkan respons. Silakan coba lagi.";
             $this->dispatch('aiError', ['message' => $this->errorMessage]);
         } finally {

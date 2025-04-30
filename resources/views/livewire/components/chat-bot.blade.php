@@ -6,22 +6,29 @@
     messageQueue: [],
     isTyping: false,
 
-    // Fungsi untuk mengirim pesan 
+    // Fungsi untuk mengirim pesan
     sendMessage() {
         if (!this.text.trim()) return;
 
         this.temporaryMessage = this.text;
         this.sending = true;
 
+        console.log("Sending message:", this.text);  // Log pesan yang akan dikirim
+
         // Simpan pesan pengguna ke database
         $wire.sendMessage(this.text)
             .then(() => {
+                console.log("Message sent successfully.");  // Log pesan berhasil dikirim
                 // Mulai proses respon
                 this.processAIResponse();
+            })
+            .catch((error) => {
+                console.error("Failed to send message:", error);  // Log error jika pengiriman gagal
             });
 
         this.text = '';
     },
+
 
     // Proses respons AI dengan penanganan kesalahan dan retry
     processAIResponse() {
