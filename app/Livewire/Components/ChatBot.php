@@ -132,30 +132,31 @@ class ChatBot extends Component
     // }
 
     public function sendMessage($text): void
-{
-    try {
-        // Cek apakah pesan kosong
-        if (empty(trim($text))) {
-            return;
+    {
+        try {
+            dd('cek sendmessage');
+            // Cek apakah pesan kosong
+            if (empty(trim($text))) {
+                return;
+            }
+
+            // Simpan pesan dalam percakapan
+            $this->conversation->messages()->create([
+                'content' => $text,
+                'is_user_message' => true
+            ]);
+
+            // Refresh percakapan setelah mengirim pesan
+            $this->conversation->refresh();
+        } catch (\Exception $e) {
+            // Log error jika terjadi exception
+            Log::error('Failed to send message: ' . $e->getMessage(), [
+                'error' => $e,
+                'text' => $text,
+                'conversation_id' => $this->conversation->id ?? null
+            ]);
         }
-
-        // Simpan pesan dalam percakapan
-        $this->conversation->messages()->create([
-            'content' => $text,
-            'is_user_message' => true
-        ]);
-
-        // Refresh percakapan setelah mengirim pesan
-        $this->conversation->refresh();
-    } catch (\Exception $e) {
-        // Log error jika terjadi exception
-        Log::error('Failed to send message: ' . $e->getMessage(), [
-            'error' => $e,
-            'text' => $text,
-            'conversation_id' => $this->conversation->id ?? null
-        ]);
     }
-}
 
     /**
      * Dapatkan konteks persona pengguna
