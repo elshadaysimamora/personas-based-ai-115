@@ -49,8 +49,10 @@ class UserResource extends Resource
                 Select::make('persona_id')
                     ->label('Persona')
                     ->options(
-                        Personas::all()->pluck('title', 'id')->toArray()
-                    ),
+                        Personas::all()->pluck('title', 'id')->filter()->toArray()
+                    )
+                    ->placeholder('Pilih persona')
+                    ->searchable(),
                 Toggle::make('is_admin')
                     ->label('Admin Access')
                     ->default(false)
