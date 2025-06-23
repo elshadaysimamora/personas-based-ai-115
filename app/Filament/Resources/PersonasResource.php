@@ -36,7 +36,10 @@ class PersonasResource extends Resource
                     ->label('AI Prompt')
                     ->required(),
                 FileUpload::make('image')
-                    ->label('Image'),
+                    ->label('Image')
+                    ->directory('images') // akan tersimpan di storage/app/public/images
+                    ->preserveFilenames()
+                    ->visibility('public'),
 
             ])->columns(1);
     }
