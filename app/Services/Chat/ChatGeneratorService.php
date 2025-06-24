@@ -3,6 +3,7 @@
 namespace App\Services\Chat;
 
 use App\Models\Conversation;
+use BladeUI\Icons\Factory;
 use OpenAI\Laravel\Facades\OpenAI;
 use App\Services\Search\HybridSearchService;
 use App\Services\Search\VectorSearchService;
@@ -128,13 +129,16 @@ class ChatGeneratorService
     private function createStreamResponse(array $messages)
     {
         try {
-            return OpenAI::chat()->createStreamed([
+            $client = \OpenAI::factory()->withApiKey(config('services.openai.api_key'))->make();
+
+            $stream = $client->chat()->createStreamed([
                 'model' => self::DEFAULT_MODEL,
                 'messages' => $messages,
-                // 'temperature' => self::DEFAULT_TEMPERATURE,
-                // 'max_tokens' => self::DEFAULT_MAX_TOKENS,
                 'stream' => true,
             ]);
+
+            return $stream;
+
         } catch (\Exception $e) {
             Log::error('Error creating stream response: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString()
