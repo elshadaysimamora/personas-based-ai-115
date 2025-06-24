@@ -135,7 +135,7 @@ class ChatGeneratorService
                 'model' => self::DEFAULT_MODEL,
                 'messages' => $messages,
                 'stream' => true,
-            ]);
+            ]); 
 
             return $stream;
 

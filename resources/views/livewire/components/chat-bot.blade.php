@@ -132,7 +132,7 @@
                             id="message-{{ $loop->index }}">
                             <!-- User Message -->
                             @if ($message->is_user_message)
-                                <div class="message bg-blue-800 px-4 py-3 text-white max-w-xl rounded-lg shadow-md">
+                                <div class="message bg-blue-800 px-4 py-3 text-white max-w-xl rounded-lg shadow-md selection:bg-white selection:text-blue-800">
                                     {{ $message->content }}
                                 </div>
                             @else
