@@ -6,7 +6,7 @@
 
 <div class="h-screen bg-gray-900">
     <div class="">
-        <livewire:components.chatbot :$conversation/>
+        <livewire:components.chat-bot :$conversation/>
     </div>
 </div>
 
