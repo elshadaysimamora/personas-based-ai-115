@@ -210,7 +210,6 @@ class ChatBot extends Component
      */
     public function respond(): void
     {
-        Log::error('masuk kedalam fungsi respon ');
         $this->errorMessage = '';
         $this->responding = true;
 
@@ -227,26 +226,6 @@ class ChatBot extends Component
                 'gpt-rag' => $this->chatGeneratorService->generateWithRAG($this->conversation),
                 default => $this->chatGeneratorService->generateResponseAI($this->conversation)
             };
-
-            // // Kumpulkan seluruh respons dari stream
-            // $allContent = '';
-            // foreach ($stream as $chunk) {
-            //     $content = $chunk->choices[0]->delta->content ?? '';
-            //     $allContent .= $content;
-            // }
-
-            // dd($allContent); // Ini akan menampilkan konten respons lengkap
-
-            // $entireMessage = '';
-            // // Proses stream token per token
-            // foreach ($stream as $response) {
-            //     $content = $response->choices[0]->delta->content ?? '';
-            //     if ($content) {
-            //         $entireMessage .= $content;
-            //         $this->answer = $content;
-            //         $this->stream(to: 'response', content: $content);
-            //     }
-            // }
 
             $entireMessage = '';
             foreach ($stream as $response) {
@@ -271,7 +250,6 @@ class ChatBot extends Component
             $this->dispatch('messageAdded');
         } catch (\Exception $e) {
             $this->errorMessage = $e->getMessage();
-
             // Kirim pesan error yang lebih ramah pengguna
             $this->errorMessage = "Terjadi kesalahan saat menghasilkan respons. Silakan coba lagi.";
             $this->dispatch('aiError', ['message' => $this->errorMessage]);
